@@ -1,0 +1,69 @@
+!pip install SpeechRecognition
+!pip install gTTS
+
+from google.colab import files
+uploaded = files.upload()
+
+!pip install pydub
+!apt-get install ffmpeg
+
+
+import speech_recognition as sr
+from gtts import gTTS
+from pydub import AudioSegment
+from IPython.display import Audio
+from google.colab import files
+
+# Function to convert text to speech using gTTS
+def SpeakText(command):
+    tts = gTTS(command, lang='en')
+    tts.save("output.mp3")
+    return Audio("output.mp3", autoplay=True)
+
+# Upload an MP3 audio file
+print("Please upload your MP3 file")
+uploaded = files.upload()
+
+# Convert MP3 to WAV using pydub
+mp3_file = next(iter(uploaded))  # Get the uploaded file name
+sound = AudioSegment.from_mp3(mp3_file)
+wav_filename = "converted.wav"
+sound.export(wav_filename, format="wav")
+
+# Recognize speech from the converted WAV file
+recognizer = sr.Recognizer()
+
+with sr.AudioFile(wav_filename) as source:
+    audio_data = recognizer.record(source)
+    try:
+        # Using Google Speech Recognition to convert the audio
+        MyText = recognizer.recognize_google(audio_data)
+        MyText = MyText.lower()
+        print(f"Did you say: {MyText}")
+        SpeakText(MyText)  # Speak the recognized text
+    except sr.UnknownValueError:
+        print("Sorry, I could not understand the audio")
+    except sr.RequestError as e:
+        print(f"Could not request results; {e}")
+
+
+!pip install gTTS
+
+
+from gtts import gTTS
+from IPython.display import Audio
+
+# Function to convert text to audio and play it
+def text_to_audio(text, lang='en'):
+    # Convert text to speech
+    tts = gTTS(text=text, lang=lang)
+
+    # Save the audio file
+    tts.save("output.mp3")
+
+    # Play the audio in Google Colab
+    return Audio("output.mp3", autoplay=True)
+
+# Example usage
+text = "Hello, Check this out. Conversion is great."
+text_to_audio(text)
