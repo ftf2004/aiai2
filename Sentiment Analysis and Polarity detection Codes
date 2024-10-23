@@ -1,0 +1,18 @@
+from textblob import TextBlob
+import nltk
+nltk.download('stopwords')
+
+def get_sentiment(sentence):
+  blob=TextBlob(sentence)
+  polarity=blob.sentiment.polarity
+  subjectivity=blob.sentiment.subjectivity
+  return polarity, subjectivity
+
+sentence=input("Enter a sentence: ")
+polarity, subjectivity = get_sentiment(sentence)
+print(f"Polarity of the sentence: {polarity}")
+print(f"Subjectivity of the sentence: {subjectivity}")
+
+Enter a sentence: Quite boring
+Polarity of the sentence: -1.0
+Subjectivity of the sentence: 1.0
